@@ -3,11 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEST</title>
+    <title>Task Tracker</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>hellos</h1>
-    <h2>bum baby</h2>
-    <p>dhtuyjuyhzruyidyutjhrzt,fi7k6jstdyfiukyjtsjydikustdifkdujyhrsujyhteg</p>
+    <div class="container">
+        <h1>Task Tracker</h1>
+        <div class="task-input">
+            <input type="text" id="taskName" placeholder="Task Name" required>
+            <textarea id="taskDesc" placeholder="Task Description" required></textarea>
+            <div class="timer-controls">
+                <button id="startBtn">Start</button>
+                <button id="pauseBtn" disabled>Pause</button>
+                <button id="stopBtn" disabled>Stop</button>
+            </div>
+            <div id="timer">00:00:00</div>
+        </div>
+        <div class="task-list">
+            <h2>Today's Tasks</h2>
+            <ul id="taskList"></ul>
+            <button id="exportBtn">Export to PDF</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
