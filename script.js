@@ -4,11 +4,16 @@ let tasks = [];
 let sessionStartTime = null;
 let sessionTimerInterval = null;
 let userName = '';
+let currentMonth = 2; // March (0-based index, March 24, 2025)
 
 const loginSection = document.getElementById('loginSection');
 const mainSection = document.getElementById('mainSection');
 const loginForm = document.getElementById('loginForm');
 const calendarContainer = document.getElementById('calendarContainer');
+const daysContainer = document.getElementById('daysContainer');
+const currentMonthEl = document.getElementById('currentMonth');
+const prevMonthBtn = document.getElementById('prevMonth');
+const nextMonthBtn = document.getElementById('nextMonth');
 const taskSection = document.getElementById('taskSection');
 const selectedDateEl = document.getElementById('selectedDate');
 const taskList = document.getElementById('taskList');
@@ -97,6 +102,8 @@ function createTaskCard(taskData = {}, date) {
             <button class="start-btn">Start</button>
             <button class="pause-btn" disabled>Pause</button>
             <button class="stop-btn" disabled>Stop</button>
+            <button class="next-day-btn">Next Day</button>
+            <button class="reschedule-btn">Reschedule</button>
             <button class="delete-btn">Delete</button>
         </div>
         <div class="timer">00:00:00</div>
@@ -105,6 +112,8 @@ function createTaskCard(taskData = {}, date) {
     const startBtn = card.querySelector('.start-btn');
     const pauseBtn = card.querySelector('.pause-btn');
     const stopBtn = card.querySelector('.stop-btn');
+    const nextDayBtn = card.querySelector('.next-day-btn');
+    const rescheduleBtn = card.querySelector('.reschedule-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     const timerDisplay = card.querySelector('.timer');
     const nameInput = card.querySelector('.task-name');
@@ -113,6 +122,8 @@ function createTaskCard(taskData = {}, date) {
     startBtn.addEventListener('click', () => startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay));
     pauseBtn.addEventListener('click', () => pauseTimer(task, pauseBtn));
     stopBtn.addEventListener('click', () => stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay));
+    nextDayBtn.addEventListener('click', () => moveToNextDay(task, card));
+    rescheduleBtn.addEventListener('click', () => rescheduleTask(task, card));
     deleteBtn.addEventListener('click', () => deleteTask(taskId, card));
 
     return card;
@@ -172,6 +183,38 @@ function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, time
     descInput.disabled = false;
 }
 
+function moveToNextDay(task, card) {
+    if (task.isDeleted) return;
+    const [day, month, year] = task.date.split('/').map(Number);
+    const currentDate = new Date(year, month - 1, day);
+    currentDate.setDate(currentDate.getDate() + 1);
+    const newDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+    task.date = newDate;
+    task.auditTrail.push(`Moved to ${newDate} by ${userName}`);
+    if (task.date === selectedDate) {
+        card.remove(); // Remove from current view if still on selected date
+    }
+    renderTasks();
+}
+
+function rescheduleTask(task, card) {
+    if (task.isDeleted) return;
+    const newDate = prompt('Enter new date (DD/MM/YYYY):', task.date);
+    if (newDate && /^\d{2}\/\d{2}\/\d{4}$/.test(newDate)) {
+        const [day, month, year] = newDate.split('/').map(Number);
+        if (year === 2025 && month >= 1 && month <= 12 && day >= 1 && day <= new Date(year, month, 0).getDate()) {
+            task.date = newDate;
+            task.auditTrail.push(`Rescheduled to ${newDate} by ${userName}`);
+            if (task.date !== selectedDate) {
+                card.remove();
+            }
+            renderTasks();
+        } else {
+            alert('Invalid date. Please use DD/MM/YYYY format within 2025.');
+        }
+    }
+}
+
 function deleteTask(taskId, card) {
     const task = tasks.find(t => t.id === taskId);
     if (task && !task.isDeleted) {
@@ -185,47 +228,37 @@ function deleteTask(taskId, card) {
 }
 
 function renderCalendar() {
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    currentMonthEl.textContent = `${months[currentMonth]} 2025`;
 
-    months.forEach((month, index) => {
-        const monthEl = document.createElement('div');
-        monthEl.className = 'month';
-        monthEl.innerHTML = `<h3>${month} 2025</h3><div class="days"></div>`;
-        const daysEl = monthEl.querySelector('.days');
+    daysContainer.innerHTML = '';
+    const daysInMonth = new Date(2025, currentMonth + 1, 0).getDate();
+    const firstDay = new Date(2025, currentMonth, 1).getDay();
 
-        const daysInMonth = new Date(2025, index + 1, 0).getDate();
-        const firstDay = new Date(2025, index, 1).getDay();
+    for (let i = 0; i < firstDay; i++) {
+        daysContainer.innerHTML += '<div class="day"></div>';
+    }
 
-        for (let i = 0; i < firstDay; i++) {
-            daysEl.innerHTML += '<div class="day"></div>';
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dateStr = `${day.toString().padStart(2, '0')}/${(index + 1).toString().padStart(2, '0')}/2025`;
-            const dayEl = document.createElement('div');
-            dayEl.className = 'day';
-            dayEl.textContent = day;
-            dayEl.addEventListener('click', () => {
-                selectedDate = dateStr;
-                document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
-                dayEl.classList.add('selected');
-                renderTasks();
-            });
-            daysEl.appendChild(dayEl);
-        }
-
-        calendarContainer.appendChild(monthEl);
-    });
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${day.toString().padStart(2, '0')}/${(currentMonth + 1).toString().padStart(2, '0')}/2025`;
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day';
+        dayEl.textContent = day;
+        dayEl.addEventListener('click', () => {
+            selectedDate = dateStr;
+            document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+            dayEl.classList.add('selected');
+            renderTasks();
+        });
+        daysContainer.appendChild(dayEl);
+    }
 }
 
 function renderTasks() {
     taskList.innerHTML = '';
     selectedDateEl.textContent = selectedDate || 'Select a Date';
     if (selectedDate) {
-        const dayTasks = tasks.filter(task => task.date === selectedDate);
+        const dayTasks = tasks.filter(task => task.date === selectedDate && !task.isDeleted);
         if (schedule[selectedDate]) {
             schedule[selectedDate].forEach(taskData => {
                 if (!dayTasks.some(t => t.name === taskData.name && t.description === taskData.description)) {
@@ -235,10 +268,8 @@ function renderTasks() {
             });
         }
         dayTasks.forEach(task => {
-            if (!task.isDeleted || task.date === selectedDate) {
-                const card = createTaskCard(task, selectedDate);
-                taskList.appendChild(card);
-            }
+            const card = createTaskCard(task, selectedDate);
+            taskList.appendChild(card);
         });
     }
 }
@@ -302,7 +333,7 @@ function exportToPDF() {
     doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, 290);
 
     doc.save(`kefir_task_report_${new Date().toISOString().split('T')[0]}_${userName}.pdf`);
-    clearInterval(sessionTimerInterval); // Stop timer on export
+    clearInterval(sessionTimerInterval);
 }
 
 loginForm.addEventListener('submit', (e) => {
@@ -319,6 +350,16 @@ loginForm.addEventListener('submit', (e) => {
     } else {
         alert('Please enter both first name and surname.');
     }
+});
+
+prevMonthBtn.addEventListener('click', () => {
+    currentMonth = Math.max(0, currentMonth - 1);
+    renderCalendar();
+});
+
+nextMonthBtn.addEventListener('click', () => {
+    currentMonth = Math.min(11, currentMonth + 1);
+    renderCalendar();
 });
 
 addTaskBtn.addEventListener('click', () => {
