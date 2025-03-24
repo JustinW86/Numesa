@@ -1,42 +1,43 @@
 const { jsPDF } = window.jspdf;
 
 let tasks = [];
-const taskContainer = document.getElementById('taskContainer');
-const createTaskBtn = document.getElementById('createTaskBtn');
+const dayContainer = document.getElementById('dayContainer');
 const exportBtn = document.getElementById('exportBtn');
 
-// Predefined schedule based on the document (starting March 24, 2025)
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+// Predefined schedule (March 24-28, 2025)
 const schedule = {
-    "24/03": [
-        { name: "SM media messages", description: "Post social media messages" },
-        { name: "Mailer: Product launch", description: "Send product launch email" },
-        { name: "Posts: Workshop", description: "Create workshop social media posts" },
-        { name: "Posts: Product Launch", description: "Create product launch social media posts" },
-        { name: "Facebook/Google Ad", description: "Set up FB/Google ad campaign" },
-        { name: "Create SM content", description: "Create 2 weeks of content for FB/Insta/LinkedIn/WhatsApp (YouTube, TikTok)" },
-        { name: "Load MK starter product", description: "Add MK starter product to website" }
+    "Monday": [
+        { name: "SM media messages", description: "Promote kefir benefits on social media" },
+        { name: "Mailer: Product launch", description: "Announce new kefir product via email" },
+        { name: "Posts: Workshop", description: "Share kefir workshop details" },
+        { name: "Posts: Product Launch", description: "Post about kefir product launch" },
+        { name: "Facebook/Google Ad", description: "Run kefir health ads" },
+        { name: "Create SM content", description: "Plan 2 weeks of kefir/gut health content" },
+        { name: "Load MK starter product", description: "Add kefir starter to website" }
     ],
-    "25/03": [
-        { name: "Check website speed", description: "Check website for speed, performance" },
-        { name: "Monitor Analytics", description: "Review website analytics" },
-        { name: "Check website uptime", description: "Ensure no errors or downtime" },
-        { name: "Update plugins", description: "Update website plugins" },
-        { name: "Test checkout", description: "Test checkout process and payment gateways" },
-        { name: "Check broken links", description: "Check for broken links on website" },
-        { name: "Update SEO", description: "Update website SEO" },
-        { name: "Monthly newsletter", description: "Prepare and send monthly newsletter" },
-        { name: "Blog", description: "Write and publish a blog post" },
-        { name: "Develop content calendar", description: "Develop monthly content calendar (last Monday)" }
+    "Tuesday": [
+        { name: "Check website speed", description: "Optimize site for kefir sales" },
+        { name: "Monitor Analytics", description: "Track kefir product engagement" },
+        { name: "Check website uptime", description: "Ensure kefir site is live" },
+        { name: "Update plugins", description: "Update site plugins for security" },
+        { name: "Test checkout", description: "Test kefir purchase process" },
+        { name: "Check broken links", description: "Fix links on kefir pages" },
+        { name: "Update SEO", description: "Boost kefir-related keywords" },
+        { name: "Monthly newsletter", description: "Send kefir health tips" },
+        { name: "Blog", description: "Write about kefir and gut health" },
+        { name: "Develop content calendar", description: "Plan kefir SM/email content" }
     ],
-    "26/03": [
-        { name: "Update product listings", description: "Update stock levels and pricing" },
-        { name: "Update calendar", description: "Update calendar with events" },
-        { name: "Load special products", description: "Load special products as needed" },
-        { name: "Compile analytics", description: "Compile weekly analytics reports" }
+    "Wednesday": [
+        { name: "Update product listings", description: "Update kefir stock/pricing" },
+        { name: "Update calendar", description: "Add kefir events" },
+        { name: "Load special products", description: "Add kefir specials" },
+        { name: "Compile analytics", description: "Report on kefir sales/traffic" }
     ],
-    "27/03": [],
-    "28/03": [
-        { name: "Weekly feedback", description: "Hold weekly feedback meeting" }
+    "Thursday": [],
+    "Friday": [
+        { name: "Weekly feedback", description: "Review kefir campaign progress" }
     ]
 };
 
@@ -51,12 +52,13 @@ function getTimestamp() {
     return new Date().toLocaleString();
 }
 
-function createTaskCard(taskData = {}) {
-    const taskId = Date.now() + Math.random(); // Unique ID
+function createTaskCard(taskData = {}, day) {
+    const taskId = Date.now() + Math.random();
     const task = {
         id: taskId,
         name: taskData.name || '',
         description: taskData.description || '',
+        day: day,
         totalTime: 0,
         isRunning: false,
         isPaused: false,
@@ -95,8 +97,7 @@ function createTaskCard(taskData = {}) {
     stopBtn.addEventListener('click', () => stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay));
     deleteBtn.addEventListener('click', () => deleteTask(taskId, card));
 
-    taskContainer.appendChild(card);
-    return task;
+    return card;
 }
 
 function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
@@ -165,6 +166,30 @@ function deleteTask(taskId, card) {
     }
 }
 
+function createDaySection(day) {
+    const section = document.createElement('div');
+    section.className = 'day-section';
+    section.innerHTML = `<h2>${day}</h2><div class="task-list" id="${day.toLowerCase()}-tasks"></div><button class="add-task-btn" id="add-${day.toLowerCase()}">Add Task</button>`;
+    
+    const taskList = section.querySelector(`#${day.toLowerCase()}-tasks`);
+    const addBtn = section.querySelector(`#add-${day.toLowerCase()}`);
+
+    // Load scheduled tasks
+    if (schedule[day]) {
+        schedule[day].forEach(taskData => {
+            const card = createTaskCard(taskData, day);
+            taskList.appendChild(card);
+        });
+    }
+
+    addBtn.addEventListener('click', () => {
+        const card = createTaskCard({}, day);
+        taskList.appendChild(card);
+    });
+
+    dayContainer.appendChild(section);
+}
+
 function exportToPDF() {
     const doc = new jsPDF();
     
@@ -172,61 +197,62 @@ function exportToPDF() {
     doc.rect(0, 0, 210, 20, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
-    doc.text("Task Tracker Report - Numesa", 10, 12);
+    doc.text("Kefir Gut Health Tracker - Numesa", 10, 12);
     
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
     doc.text(`Generated on: ${getTimestamp()}`, 10, 25);
 
     let y = 35;
-    tasks.forEach((task, index) => {
-        doc.setFontSize(12);
-        doc.setFillColor(240, 240, 240);
-        doc.rect(10, y - 5, 190, 10, 'F');
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Task ${index + 1}: ${task.name}${task.isDeleted ? ' (Deleted)' : ''}`, 12, y);
-        y += 10;
+    daysOfWeek.forEach(day => {
+        const dayTasks = tasks.filter(task => task.day === day);
+        if (dayTasks.length > 0) {
+            doc.setFontSize(14);
+            doc.setFillColor(46, 125, 50);
+            doc.rect(10, y - 6, 190, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text(day, 12, y);
+            y += 10;
 
-        doc.setFontSize(10);
-        doc.text(`Description: ${task.description}`, 12, y);
-        y += 7;
-        doc.text(`Total Duration: ${formatTime(task.totalTime)}`, 12, y);
-        y += 10;
+            dayTasks.forEach((task, index) => {
+                doc.setFontSize(12);
+                doc.setFillColor(240, 240, 240);
+                doc.rect(10, y - 5, 190, 10, 'F');
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Task ${index + 1}: ${task.name}${task.isDeleted ? ' (Deleted)' : ''}`, 12, y);
+                y += 10;
 
-        doc.setFontSize(11);
-        doc.text("Audit Trail:", 12, y);
-        y += 7;
-        doc.setFontSize(9);
-        task.auditTrail.forEach(entry => {
-            if (y > 280) {
-                doc.addPage();
-                y = 20;
-            }
-            doc.text(`- ${entry}`, 15, y);
-            y += 6;
-        });
-        y += 10;
+                doc.setFontSize(10);
+                doc.text(`Description: ${task.description}`, 12, y);
+                y += 7;
+                doc.text(`Total Duration: ${formatTime(task.totalTime)}`, 12, y);
+                y += 10;
+
+                doc.setFontSize(11);
+                doc.text("Audit Trail:", 12, y);
+                y += 7;
+                doc.setFontSize(9);
+                task.auditTrail.forEach(entry => {
+                    if (y > 280) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    doc.text(`- ${entry}`, 15, y);
+                    y += 6;
+                });
+                y += 10;
+            });
+            y += 5;
+        }
     });
 
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
     doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, 290);
 
-    doc.save(`task_report_${new Date().toISOString().split('T')[0]}.pdf`);
+    doc.save(`kefir_task_report_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
-// Load scheduled tasks for the current week on page load
-function loadScheduledTasks() {
-    const today = new Date().toLocaleDateString('en-GB').split('/').slice(0, 2).join('/'); // e.g., "24/03"
-    for (const date in schedule) {
-        if (date >= today) { // Only load tasks from today onward
-            schedule[date].forEach(taskData => createTaskCard(taskData));
-        }
-    }
-}
-
-createTaskBtn.addEventListener('click', createTaskCard);
+// Initialize day sections
+daysOfWeek.forEach(day => createDaySection(day));
 exportBtn.addEventListener('click', exportToPDF);
-
-// Load tasks on page load
-window.onload = loadScheduledTasks;
