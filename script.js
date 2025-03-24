@@ -29,7 +29,7 @@ function createTaskCard() {
         lastPauseStart: null,
         auditTrail: [`Created at ${getTimestamp()}`]
     };
-    tasks.push(task);
+    tasks.push(task); // Push task directly, not { id: taskId, task }
 
     const card = document.createElement('div');
     card.className = 'task-card';
@@ -60,7 +60,6 @@ function createTaskCard() {
     deleteBtn.addEventListener('click', () => deleteTask(taskId, card));
 
     taskContainer.appendChild(card);
-    tasks.push({ id: taskId, task }); // Store task for audit trail
 }
 
 function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
@@ -115,11 +114,12 @@ function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, time
 }
 
 function deleteTask(taskId, card) {
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    if (taskIndex !== -1) {
+        const task = tasks[taskIndex];
         clearInterval(task.interval);
         task.auditTrail.push(`Deleted at ${getTimestamp()}`);
-        tasks = tasks.filter(t => t.id !== taskId);
+        tasks.splice(taskIndex, 1); // Remove task from array
         card.remove();
     }
 }
@@ -180,8 +180,5 @@ function exportToPDF() {
     doc.save(`task_report_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
-createTaskBtn.addEventListener('click', () => {
-    createTaskCard();
-    // Audit trail for task creation is handled within createTaskCard
-});
+createTaskBtn.addEventListener('click', createTaskCard);
 exportBtn.addEventListener('click', exportToPDF);
