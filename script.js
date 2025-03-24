@@ -25,11 +25,12 @@ function createTaskCard() {
         totalTime: 0,
         isRunning: false,
         isPaused: false,
+        isDeleted: false, // New flag to track deletion
         interval: null,
         lastPauseStart: null,
         auditTrail: [`Created at ${getTimestamp()}`]
     };
-    tasks.push(task); // Push task directly, not { id: taskId, task }
+    tasks.push(task);
 
     const card = document.createElement('div');
     card.className = 'task-card';
@@ -63,6 +64,7 @@ function createTaskCard() {
 }
 
 function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
+    if (task.isDeleted) return; // Prevent actions on deleted tasks
     if (!nameInput.value || !descInput.value) {
         alert('Please enter a task name and description.');
         return;
@@ -88,6 +90,7 @@ function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, tim
 }
 
 function pauseTimer(task, pauseBtn) {
+    if (task.isDeleted) return; // Prevent actions on deleted tasks
     task.isPaused = !task.isPaused;
     if (task.isPaused) {
         task.lastPauseStart = Date.now();
@@ -101,6 +104,7 @@ function pauseTimer(task, pauseBtn) {
 }
 
 function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
+    if (task.isDeleted) return; // Prevent actions on deleted tasks
     clearInterval(task.interval);
     task.isRunning = false;
     task.isPaused = false;
@@ -114,13 +118,14 @@ function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, time
 }
 
 function deleteTask(taskId, card) {
-    const taskIndex = tasks.findIndex(t => t.id === taskId);
-    if (taskIndex !== -1) {
-        const task = tasks[taskIndex];
+    const task = tasks.find(t => t.id === taskId);
+    if (task && !task.isDeleted) {
         clearInterval(task.interval);
+        task.isRunning = false;
+        task.isPaused = false;
+        task.isDeleted = true; // Mark as deleted instead of removing
         task.auditTrail.push(`Deleted at ${getTimestamp()}`);
-        tasks.splice(taskIndex, 1); // Remove task from array
-        card.remove();
+        card.remove(); // Remove from UI only
     }
 }
 
@@ -146,7 +151,7 @@ function exportToPDF() {
         doc.setFillColor(240, 240, 240);
         doc.rect(10, y - 5, 190, 10, 'F');
         doc.setTextColor(0, 0, 0);
-        doc.text(`Task ${index + 1}: ${task.name}`, 12, y);
+        doc.text(`Task ${index + 1}: ${task.name}${task.isDeleted ? ' (Deleted)' : ''}`, 12, y);
         y += 10;
 
         // Task Details
