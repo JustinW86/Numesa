@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kefir Gut Health Tracker - Numesa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,7 +22,14 @@
             <img src="https://numesa.co.za/wp-content/uploads/2023/12/front-page-logo.png" alt="Numesa Logo" class="logo">
             <h1>Kefir Gut Health Task Tracker</h1>
             <div id="sessionTimer" class="session-timer">Session Time: 00:00:00</div>
-            <div id="calendarContainer" class="calendar-container"></div>
+            <div id="calendarContainer" class="calendar-container">
+                <div class="calendar-nav">
+                    <button id="prevMonth">&lt;</button>
+                    <h2 id="currentMonth"></h2>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+                <div id="daysContainer" class="days"></div>
+            </div>
             <div id="taskSection" class="task-section">
                 <h2 id="selectedDate">Select a Date</h2>
                 <div id="taskList" class="task-list"></div>
