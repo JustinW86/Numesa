@@ -5,6 +5,41 @@ const taskContainer = document.getElementById('taskContainer');
 const createTaskBtn = document.getElementById('createTaskBtn');
 const exportBtn = document.getElementById('exportBtn');
 
+// Predefined schedule based on the document (starting March 24, 2025)
+const schedule = {
+    "24/03": [
+        { name: "SM media messages", description: "Post social media messages" },
+        { name: "Mailer: Product launch", description: "Send product launch email" },
+        { name: "Posts: Workshop", description: "Create workshop social media posts" },
+        { name: "Posts: Product Launch", description: "Create product launch social media posts" },
+        { name: "Facebook/Google Ad", description: "Set up FB/Google ad campaign" },
+        { name: "Create SM content", description: "Create 2 weeks of content for FB/Insta/LinkedIn/WhatsApp (YouTube, TikTok)" },
+        { name: "Load MK starter product", description: "Add MK starter product to website" }
+    ],
+    "25/03": [
+        { name: "Check website speed", description: "Check website for speed, performance" },
+        { name: "Monitor Analytics", description: "Review website analytics" },
+        { name: "Check website uptime", description: "Ensure no errors or downtime" },
+        { name: "Update plugins", description: "Update website plugins" },
+        { name: "Test checkout", description: "Test checkout process and payment gateways" },
+        { name: "Check broken links", description: "Check for broken links on website" },
+        { name: "Update SEO", description: "Update website SEO" },
+        { name: "Monthly newsletter", description: "Prepare and send monthly newsletter" },
+        { name: "Blog", description: "Write and publish a blog post" },
+        { name: "Develop content calendar", description: "Develop monthly content calendar (last Monday)" }
+    ],
+    "26/03": [
+        { name: "Update product listings", description: "Update stock levels and pricing" },
+        { name: "Update calendar", description: "Update calendar with events" },
+        { name: "Load special products", description: "Load special products as needed" },
+        { name: "Compile analytics", description: "Compile weekly analytics reports" }
+    ],
+    "27/03": [],
+    "28/03": [
+        { name: "Weekly feedback", description: "Hold weekly feedback meeting" }
+    ]
+};
+
 function formatTime(seconds) {
     const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
     const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
@@ -16,16 +51,16 @@ function getTimestamp() {
     return new Date().toLocaleString();
 }
 
-function createTaskCard() {
-    const taskId = Date.now();
+function createTaskCard(taskData = {}) {
+    const taskId = Date.now() + Math.random(); // Unique ID
     const task = {
         id: taskId,
-        name: '',
-        description: '',
+        name: taskData.name || '',
+        description: taskData.description || '',
         totalTime: 0,
         isRunning: false,
         isPaused: false,
-        isDeleted: false, // New flag to track deletion
+        isDeleted: false,
         interval: null,
         lastPauseStart: null,
         auditTrail: [`Created at ${getTimestamp()}`]
@@ -36,8 +71,8 @@ function createTaskCard() {
     card.className = 'task-card';
     card.id = `task-${taskId}`;
     card.innerHTML = `
-        <input type="text" class="task-name" placeholder="Task Name" required>
-        <textarea class="task-desc" placeholder="Task Description" required></textarea>
+        <input type="text" class="task-name" placeholder="Task Name" value="${task.name}" required>
+        <textarea class="task-desc" placeholder="Task Description" required>${task.description}</textarea>
         <div class="timer-controls">
             <button class="start-btn">Start</button>
             <button class="pause-btn" disabled>Pause</button>
@@ -61,10 +96,11 @@ function createTaskCard() {
     deleteBtn.addEventListener('click', () => deleteTask(taskId, card));
 
     taskContainer.appendChild(card);
+    return task;
 }
 
 function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
-    if (task.isDeleted) return; // Prevent actions on deleted tasks
+    if (task.isDeleted) return;
     if (!nameInput.value || !descInput.value) {
         alert('Please enter a task name and description.');
         return;
@@ -90,7 +126,7 @@ function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, tim
 }
 
 function pauseTimer(task, pauseBtn) {
-    if (task.isDeleted) return; // Prevent actions on deleted tasks
+    if (task.isDeleted) return;
     task.isPaused = !task.isPaused;
     if (task.isPaused) {
         task.lastPauseStart = Date.now();
@@ -104,7 +140,7 @@ function pauseTimer(task, pauseBtn) {
 }
 
 function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
-    if (task.isDeleted) return; // Prevent actions on deleted tasks
+    if (task.isDeleted) return;
     clearInterval(task.interval);
     task.isRunning = false;
     task.isPaused = false;
@@ -123,30 +159,27 @@ function deleteTask(taskId, card) {
         clearInterval(task.interval);
         task.isRunning = false;
         task.isPaused = false;
-        task.isDeleted = true; // Mark as deleted instead of removing
+        task.isDeleted = true;
         task.auditTrail.push(`Deleted at ${getTimestamp()}`);
-        card.remove(); // Remove from UI only
+        card.remove();
     }
 }
 
 function exportToPDF() {
     const doc = new jsPDF();
     
-    // Header
     doc.setFillColor(0, 123, 255);
     doc.rect(0, 0, 210, 20, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
-    doc.text("Task Tracker Report", 10, 12);
+    doc.text("Task Tracker Report - Numesa", 10, 12);
     
-    // Date
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
     doc.text(`Generated on: ${getTimestamp()}`, 10, 25);
 
     let y = 35;
     tasks.forEach((task, index) => {
-        // Task Section Header
         doc.setFontSize(12);
         doc.setFillColor(240, 240, 240);
         doc.rect(10, y - 5, 190, 10, 'F');
@@ -154,20 +187,18 @@ function exportToPDF() {
         doc.text(`Task ${index + 1}: ${task.name}${task.isDeleted ? ' (Deleted)' : ''}`, 12, y);
         y += 10;
 
-        // Task Details
         doc.setFontSize(10);
         doc.text(`Description: ${task.description}`, 12, y);
         y += 7;
         doc.text(`Total Duration: ${formatTime(task.totalTime)}`, 12, y);
         y += 10;
 
-        // Audit Trail
         doc.setFontSize(11);
         doc.text("Audit Trail:", 12, y);
         y += 7;
         doc.setFontSize(9);
         task.auditTrail.forEach(entry => {
-            if (y > 280) { // Check for page break
+            if (y > 280) {
                 doc.addPage();
                 y = 20;
             }
@@ -177,7 +208,6 @@ function exportToPDF() {
         y += 10;
     });
 
-    // Footer
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
     doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, 290);
@@ -185,5 +215,18 @@ function exportToPDF() {
     doc.save(`task_report_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
+// Load scheduled tasks for the current week on page load
+function loadScheduledTasks() {
+    const today = new Date().toLocaleDateString('en-GB').split('/').slice(0, 2).join('/'); // e.g., "24/03"
+    for (const date in schedule) {
+        if (date >= today) { // Only load tasks from today onward
+            schedule[date].forEach(taskData => createTaskCard(taskData));
+        }
+    }
+}
+
 createTaskBtn.addEventListener('click', createTaskCard);
 exportBtn.addEventListener('click', exportToPDF);
+
+// Load tasks on page load
+window.onload = loadScheduledTasks;
