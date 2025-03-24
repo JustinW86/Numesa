@@ -1,13 +1,13 @@
 body {
-    font-family: 'Orbitron', sans-serif; /* Futuristic font */
-    background: linear-gradient(135deg, #e0f7fa, #a5d6a7); /* Kefir-inspired gradient */
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
     margin: 0;
     padding: 20px;
     color: #263238;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.9);
     padding: 20px;
@@ -26,7 +26,7 @@ body {
 
 h1 {
     text-align: center;
-    color: #2e7d32; /* Green for gut health */
+    color: #2e7d32;
     font-size: 28px;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -34,25 +34,117 @@ h1 {
     text-shadow: 0 0 5px rgba(46, 125, 50, 0.5);
 }
 
-.day-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.login-section {
+    text-align: center;
 }
 
-.day-section {
-    background: linear-gradient(90deg, #4caf50, #81c784); /* Green gradient */
+.login-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.login-section input {
+    padding: 10px;
+    border: 1px solid #aed581;
+    border-radius: 5px;
+    font-size: 14px;
+    background: #ffffff;
+}
+
+.login-section button {
+    padding: 10px;
+    background: #0288d1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.login-section button:hover {
+    transform: scale(1.05);
+}
+
+.main-section {
+    position: relative;
+}
+
+.session-timer {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #2e7d32;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 0 10px rgba(46, 125, 50, 0.5);
+    z-index: 1000;
+}
+
+.calendar-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.month {
+    background: linear-gradient(90deg, #4caf50, #81c784);
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
 }
 
-.day-section:hover {
+.month:hover {
     transform: scale(1.02);
 }
 
-.day-section h2 {
+.month h3 {
+    color: white;
+    text-align: center;
+    margin: 0 0 10px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.day {
+    text-align: center;
+    padding: 8px;
+    background: #f1f8e9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.day:hover {
+    background: #c8e6c9;
+}
+
+.day.selected {
+    background: #0288d1;
+    color: white;
+}
+
+.task-section {
+    background: linear-gradient(90deg, #4caf50, #81c784);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.task-section h2 {
     color: white;
     margin: 0 0 10px;
     font-size: 20px;
@@ -64,7 +156,7 @@ h1 {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     padding: 10px;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
 }
 
@@ -136,14 +228,9 @@ h1 {
     margin: 5px 0;
 }
 
-#add-task-btn {
-    background: #0288d1; /* Blue for contrast */
-    margin-top: 10px;
-}
-
-#exportBtn {
+#add-task-btn, #exportBtn {
     display: block;
-    margin: 20px auto;
+    margin: 10px auto;
     padding: 10px 20px;
     background: #0288d1;
     font-size: 16px;
@@ -152,11 +239,10 @@ h1 {
     transition: transform 0.3s ease;
 }
 
-#exportBtn:hover {
+#add-task-btn:hover, #exportBtn:hover {
     transform: scale(1.05);
 }
 
-/* Custom scrollbar for futuristic feel */
 .task-list::-webkit-scrollbar {
     width: 8px;
 }
