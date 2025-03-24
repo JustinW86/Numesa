@@ -17,7 +17,7 @@ function getTimestamp() {
 }
 
 function createTaskCard() {
-    const taskId = Date.now(); // Unique ID for each task
+    const taskId = Date.now();
     const task = {
         id: taskId,
         name: '',
@@ -26,6 +26,7 @@ function createTaskCard() {
         isRunning: false,
         isPaused: false,
         interval: null,
+        lastPauseStart: null,
         auditTrail: [`Created at ${getTimestamp()}`]
     };
     tasks.push(task);
@@ -59,6 +60,7 @@ function createTaskCard() {
     deleteBtn.addEventListener('click', () => deleteTask(taskId, card));
 
     taskContainer.appendChild(card);
+    tasks.push({ id: taskId, task }); // Store task for audit trail
 }
 
 function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
@@ -88,7 +90,14 @@ function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, tim
 
 function pauseTimer(task, pauseBtn) {
     task.isPaused = !task.isPaused;
-    task.auditTrail.push(`${task.isPaused ? 'Paused' : 'Resumed'} at ${getTimestamp()}`);
+    if (task.isPaused) {
+        task.lastPauseStart = Date.now();
+        task.auditTrail.push(`Paused at ${getTimestamp()}`);
+    } else {
+        const pauseDuration = Math.floor((Date.now() - task.lastPauseStart) / 1000);
+        task.auditTrail.push(`Resumed at ${getTimestamp()} (Paused for ${formatTime(pauseDuration)})`);
+        task.lastPauseStart = null;
+    }
     pauseBtn.textContent = task.isPaused ? 'Resume' : 'Pause';
 }
 
@@ -96,7 +105,7 @@ function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, time
     clearInterval(task.interval);
     task.isRunning = false;
     task.isPaused = false;
-    task.auditTrail.push(`Stopped at ${getTimestamp()}`);
+    task.auditTrail.push(`Stopped at ${getTimestamp()} (Total Duration: ${formatTime(task.totalTime)})`);
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     stopBtn.disabled = true;
@@ -117,27 +126,62 @@ function deleteTask(taskId, card) {
 
 function exportToPDF() {
     const doc = new jsPDF();
-    doc.text("Task Tracker Report", 10, 10);
-    let y = 20;
+    
+    // Header
+    doc.setFillColor(0, 123, 255);
+    doc.rect(0, 0, 210, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.text("Task Tracker Report", 10, 12);
+    
+    // Date
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${getTimestamp()}`, 10, 25);
 
+    let y = 35;
     tasks.forEach((task, index) => {
-        doc.text(`Task ${index + 1}: ${task.name}`, 10, y);
+        // Task Section Header
+        doc.setFontSize(12);
+        doc.setFillColor(240, 240, 240);
+        doc.rect(10, y - 5, 190, 10, 'F');
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Task ${index + 1}: ${task.name}`, 12, y);
         y += 10;
-        doc.text(`Description: ${task.description}`, 10, y);
+
+        // Task Details
+        doc.setFontSize(10);
+        doc.text(`Description: ${task.description}`, 12, y);
+        y += 7;
+        doc.text(`Total Duration: ${formatTime(task.totalTime)}`, 12, y);
         y += 10;
-        doc.text(`Total Duration: ${formatTime(task.totalTime)}`, 10, y);
-        y += 10;
-        doc.text("Audit Trail:", 10, y);
-        y += 10;
+
+        // Audit Trail
+        doc.setFontSize(11);
+        doc.text("Audit Trail:", 12, y);
+        y += 7;
+        doc.setFontSize(9);
         task.auditTrail.forEach(entry => {
+            if (y > 280) { // Check for page break
+                doc.addPage();
+                y = 20;
+            }
             doc.text(`- ${entry}`, 15, y);
-            y += 10;
+            y += 6;
         });
         y += 10;
     });
 
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, 290);
+
     doc.save(`task_report_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
-createTaskBtn.addEventListener('click', createTaskCard);
+createTaskBtn.addEventListener('click', () => {
+    createTaskCard();
+    // Audit trail for task creation is handled within createTaskCard
+});
 exportBtn.addEventListener('click', exportToPDF);
