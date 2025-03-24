@@ -102,7 +102,7 @@ function createTaskCard(taskData = {}, date) {
             <button class="start-btn">Start</button>
             <button class="pause-btn" disabled>Pause</button>
             <button class="stop-btn" disabled>Stop</button>
-            <button class="next-day-btn">Next Day</button>
+            <button class="next-day-btn">Next</button>
             <button class="reschedule-btn">Reschedule</button>
             <button class="delete-btn">Delete</button>
         </div>
@@ -191,8 +191,8 @@ function moveToNextDay(task, card) {
     const newDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
     task.date = newDate;
     task.auditTrail.push(`Moved to ${newDate} by ${userName}`);
-    if (task.date === selectedDate) {
-        card.remove(); // Remove from current view if still on selected date
+    if (task.date !== selectedDate) {
+        card.remove();
     }
     renderTasks();
 }
@@ -277,7 +277,7 @@ function renderTasks() {
 function exportToPDF() {
     const doc = new jsPDF();
     
-    doc.setFillColor(0, 123, 255);
+    doc.setFillColor(76, 175, 80); // Numesa green
     doc.rect(0, 0, 210, 20, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
@@ -292,15 +292,15 @@ function exportToPDF() {
     const dayTasks = tasks.filter(task => task.date === selectedDate);
     if (selectedDate && dayTasks.length > 0) {
         doc.setFontSize(14);
-        doc.setFillColor(46, 125, 50);
+        doc.setFillColor(224, 242, 233); // Light green
         doc.rect(10, y - 6, 190, 10, 'F');
-        doc.setTextColor(255, 255, 255);
+        doc.setTextColor(0, 0, 0);
         doc.text(selectedDate, 12, y);
         y += 10;
 
         dayTasks.forEach((task, index) => {
             doc.setFontSize(12);
-            doc.setFillColor(240, 240, 240);
+            doc.setFillColor(249, 249, 249);
             doc.rect(10, y - 5, 190, 10, 'F');
             doc.setTextColor(0, 0, 0);
             doc.text(`Task ${index + 1}: ${task.name}${task.isDeleted ? ' (Deleted)' : ''}`, 12, y);
