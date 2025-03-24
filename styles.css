@@ -1,35 +1,33 @@
 body {
-    font-family: 'Roboto', sans-serif; /* Professional font */
-    background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
+    font-family: 'Roboto', sans-serif;
+    background: #f5f5f5; /* Numesa-like light background */
     margin: 0;
     padding: 20px;
-    color: #263238;
+    color: #333;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.9);
+    background: #fff;
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
     display: block;
     margin: 0 auto 20px;
-    max-width: 300px;
+    max-width: 250px;
     height: auto;
-    filter: drop-shadow(0 0 10px #4caf50);
 }
 
 h1 {
     text-align: center;
-    color: #2e7d32;
+    color: #4caf50; /* Numesa green */
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .login-section {
@@ -39,32 +37,32 @@ h1 {
 .login-section form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     max-width: 300px;
     margin: 0 auto;
 }
 
 .login-section input {
-    padding: 10px;
-    border: 1px solid #aed581;
-    border-radius: 5px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 14px;
-    background: #ffffff;
+    background: #fff;
 }
 
 .login-section button {
-    padding: 10px;
-    background: #0288d1;
+    padding: 8px;
+    background: #4caf50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     transition: background 0.3s ease;
 }
 
 .login-section button:hover {
-    background: #0277bd;
+    background: #2e7d32;
 }
 
 .main-section {
@@ -75,21 +73,21 @@ h1 {
     position: fixed;
     top: 10px;
     right: 10px;
-    background: #2e7d32;
+    background: #4caf50;
     color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 14px;
-    box-shadow: 0 0 10px rgba(46, 125, 50, 0.5);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
 
 .calendar-container {
-    background: linear-gradient(90deg, #4caf50, #81c784);
-    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     padding: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .calendar-nav {
@@ -100,21 +98,21 @@ h1 {
 }
 
 .calendar-nav button {
-    background: #0288d1;
+    background: #4caf50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     padding: 5px 10px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .calendar-nav button:hover {
-    background: #0277bd;
+    background: #2e7d32;
 }
 
 .calendar-nav h2 {
-    color: white;
+    color: #333;
     font-size: 18px;
     font-weight: 700;
     margin: 0;
@@ -128,98 +126,91 @@ h1 {
 
 .day {
     text-align: center;
-    padding: 10px;
-    background: #f1f8e9;
-    border-radius: 5px;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 4px;
     cursor: pointer;
     transition: background 0.3s ease;
 }
 
 .day:hover {
-    background: #c8e6c9;
+    background: #e0f2e9;
 }
 
 .day.selected {
-    background: #0288d1;
+    background: #4caf50;
     color: white;
 }
 
 .task-section {
-    background: linear-gradient(90deg, #4caf50, #81c784);
-    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     padding: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .task-section h2 {
-    color: white;
+    color: #4caf50;
     margin: 0 0 10px;
     font-size: 18px;
     font-weight: 700;
 }
 
 .task-list {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    padding: 10px;
-    max-height: 400px;
-    overflow-y: auto;
+    padding: 0;
 }
 
 .task-card {
-    border: 1px solid #81c784;
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 5px;
-    background: #f1f8e9;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 8px 0;
 }
 
-.task-card:hover {
-    background: #c8e6c9;
+.task-card:last-child {
+    border-bottom: none;
 }
 
 .task-card input, .task-card textarea {
-    width: 100%;
+    flex: 1;
     padding: 5px;
-    margin: 3px 0;
-    border: 1px solid #aed581;
+    margin-right: 10px;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box;
     font-size: 12px;
-    background: #ffffff;
+    background: #fff;
 }
 
 .task-card input {
     height: 25px;
+    max-width: 150px;
 }
 
 .task-card textarea {
-    height: 35px;
+    height: 25px;
     resize: none;
+    max-width: 200px;
 }
 
 .timer-controls {
     display: flex;
-    flex-wrap: wrap;
     gap: 5px;
-    justify-content: center;
-    margin: 5px 0;
+    margin-right: 10px;
 }
 
 .timer-controls button {
-    padding: 5px 10px;
-    background: #2e7d32;
+    padding: 4px 8px;
+    background: #4caf50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 10px;
     transition: background 0.3s ease;
 }
 
 .timer-controls button:hover:not(:disabled) {
-    background: #4caf50;
+    background: #2e7d32;
 }
 
 .timer-controls button:disabled {
@@ -228,36 +219,25 @@ h1 {
 }
 
 .timer {
+    width: 60px;
     text-align: center;
-    font-size: 14px;
-    color: #1b5e20;
-    margin: 5px 0;
+    font-size: 12px;
+    color: #333;
 }
 
 #add-task-btn, #exportBtn {
     display: block;
     margin: 10px auto;
-    padding: 10px 20px;
-    background: #0288d1;
-    font-size: 16px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(2, 136, 209, 0.5);
+    padding: 8px 16px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
     transition: background 0.3s ease;
 }
 
 #add-task-btn:hover, #exportBtn:hover {
-    background: #0277bd;
-}
-
-.task-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.task-list::-webkit-scrollbar-thumb {
-    background: #4caf50;
-    border-radius: 4px;
-}
-
-.task-list::-webkit-scrollbar-track {
-    background: #e0f7fa;
+    background: #2e7d32;
 }
