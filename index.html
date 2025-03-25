@@ -18,27 +18,28 @@
                 <button type="submit">Login</button>
             </form>
         </div>
-        <div id="mainSection" class="main-section" style="display: none;">
+        <div id="calendarSection" class="calendar-section" style="display: none;">
             <img src="https://numesa.co.za/wp-content/uploads/2023/12/front-page-logo.png" alt="Numesa Logo" class="logo">
             <h1>Numesa Task Tracker</h1>
-            <div id="sessionTimer" class="session-timer">Session Time: 00:00:00</div>
             <div id="calendarContainer" class="calendar-container">
                 <div class="calendar-nav">
                     <button id="prevMonth"><</button>
                     <h2 id="currentMonth"></h2>
                     <button id="nextMonth">></button>
                 </div>
+                <div class="day-names">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
                 <div id="daysContainer" class="days"></div>
             </div>
-            <div id="taskSection" class="task-section">
-                <h2 id="selectedDate">Select a Date</h2>
-                <div id="taskList" class="task-list"></div>
-                <button id="addTaskBtn" class="add-task-btn">Add Task</button>
-            </div>
-            <button id="exportBtn">Export to PDF</button>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
