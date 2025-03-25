@@ -220,6 +220,18 @@ h1 {
     padding: 8px 0;
 }
 
+.task-card.completed {
+    background: #f5f5f5;
+    color: #888;
+}
+
+.task-card.completed input,
+.task-card.completed textarea {
+    background: #f5f5f5;
+    color: #888;
+    border-color: #ccc;
+}
+
 .task-card:last-child {
     border-bottom: none;
 }

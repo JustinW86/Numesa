@@ -76,53 +76,54 @@ function createTaskCard(taskData = {}, date) {
         name: taskData.name || '',
         description: taskData.description || '',
         date: date,
-        totalTime: 0,
+        totalTime: taskData.totalTime || 0,
         isRunning: false,
         isPaused: false,
-        isDeleted: false,
+        isCompleted: taskData.isCompleted || false,
+        isDeleted: taskData.isDeleted || false,
         interval: null,
         lastPauseStart: null,
-        auditTrail: [`Created at ${getTimestamp()} by ${userName}`]
+        auditTrail: taskData.auditTrail || [`Created at ${getTimestamp()} by ${userName}`]
     };
     tasks.push(task);
     localStorage.setItem('tasks', JSON.stringify(tasks));
 
     const card = document.createElement('div');
-    card.className = 'task-card';
+    card.className = `task-card${task.isCompleted ? ' completed' : ''}`;
     card.id = `task-${taskId}`;
     card.innerHTML = `
-        <input type="text" class="task-name" placeholder="Task Name" value="${task.name}" required>
-        <textarea class="task-desc" placeholder="Task Description" required>${task.description}</textarea>
+        <input type="text" class="task-name" placeholder="Task Name" value="${task.name}" required ${task.isCompleted ? 'disabled' : ''}>
+        <textarea class="task-desc" placeholder="Task Description" required ${task.isCompleted ? 'disabled' : ''}>${task.description}</textarea>
         <div class="timer-controls">
-            <button class="start-btn">Start</button>
+            <button class="start-btn" ${task.isCompleted ? 'disabled' : ''}>Start</button>
             <button class="pause-btn" disabled>Pause</button>
-            <button class="stop-btn" disabled>Stop</button>
-            <button class="reschedule-btn">Reschedule</button>
+            <button class="completed-btn" ${task.isCompleted ? 'disabled' : ''}>Completed</button>
+            <button class="reschedule-btn" ${task.isCompleted ? 'disabled' : ''}>Reschedule</button>
             <button class="delete-btn">Delete</button>
         </div>
-        <div class="timer">00:00:00</div>
+        <div class="timer">${formatTime(task.totalTime)}</div>
     `;
 
     const startBtn = card.querySelector('.start-btn');
     const pauseBtn = card.querySelector('.pause-btn');
-    const stopBtn = card.querySelector('.stop-btn');
+    const completedBtn = card.querySelector('.completed-btn');
     const rescheduleBtn = card.querySelector('.reschedule-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     const timerDisplay = card.querySelector('.timer');
     const nameInput = card.querySelector('.task-name');
     const descInput = card.querySelector('.task-desc');
 
-    startBtn.addEventListener('click', () => startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay));
+    startBtn.addEventListener('click', () => startTimer(task, startBtn, pauseBtn, completedBtn, nameInput, descInput, timerDisplay));
     pauseBtn.addEventListener('click', () => pauseTimer(task, pauseBtn));
-    stopBtn.addEventListener('click', () => stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay));
+    completedBtn.addEventListener('click', () => completeTask(task, startBtn, pauseBtn, completedBtn, rescheduleBtn, nameInput, descInput, timerDisplay));
     rescheduleBtn.addEventListener('click', () => rescheduleTask(task, card));
     deleteBtn.addEventListener('click', () => deleteTask(taskId, card));
 
     return card;
 }
 
-function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
-    if (task.isDeleted) return;
+function startTimer(task, startBtn, pauseBtn, completedBtn, nameInput, descInput, timerDisplay) {
+    if (task.isDeleted || task.isCompleted) return;
     if (!nameInput.value || !descInput.value) {
         alert('Please enter a task name and description.');
         return;
@@ -136,7 +137,7 @@ function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, tim
 
     startBtn.disabled = true;
     pauseBtn.disabled = false;
-    stopBtn.disabled = false;
+    completedBtn.disabled = false;
     nameInput.disabled = true;
     descInput.disabled = true;
 
@@ -150,7 +151,7 @@ function startTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, tim
 }
 
 function pauseTimer(task, pauseBtn) {
-    if (task.isDeleted) return;
+    if (task.isDeleted || task.isCompleted) return;
     task.isPaused = !task.isPaused;
     if (task.isPaused) {
         task.lastPauseStart = Date.now();
@@ -164,23 +165,27 @@ function pauseTimer(task, pauseBtn) {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-function stopTimer(task, startBtn, pauseBtn, stopBtn, nameInput, descInput, timerDisplay) {
-    if (task.isDeleted) return;
+function completeTask(task, startBtn, pauseBtn, completedBtn, rescheduleBtn, nameInput, descInput, timerDisplay) {
+    if (task.isDeleted || task.isCompleted) return;
     clearInterval(task.interval);
     task.isRunning = false;
     task.isPaused = false;
-    task.auditTrail.push(`Stopped at ${getTimestamp()} (Total Duration: ${formatTime(task.totalTime)}) by ${userName}`);
-    startBtn.disabled = false;
+    task.isCompleted = true;
+    task.auditTrail.push(`Completed at ${getTimestamp()} (Total Duration: ${formatTime(task.totalTime)}) by ${userName}`);
+    startBtn.disabled = true;
     pauseBtn.disabled = true;
-    stopBtn.disabled = true;
-    pauseBtn.textContent = 'Pause';
-    nameInput.disabled = false;
-    descInput.disabled = false;
+    completedBtn.disabled = true;
+    rescheduleBtn.disabled = true;
+    nameInput.disabled = true;
+    descInput.disabled = true;
+    timerDisplay.textContent = formatTime(task.totalTime);
+    const card = document.getElementById(`task-${task.id}`);
+    card.classList.add('completed');
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 function rescheduleTask(task, card) {
-    if (task.isDeleted) return;
+    if (task.isDeleted || task.isCompleted) return;
     const newDate = prompt('Enter new date (DD/MM/YYYY):', task.date);
     if (newDate && /^\d{2}\/\d{2}\/\d{4}$/.test(newDate)) {
         const [day, month, year] = newDate.split('/').map(Number);
@@ -233,63 +238,112 @@ function renderTasks() {
 
 function exportToPDF() {
     const doc = new jsPDF();
-    
-    doc.setFillColor(76, 175, 80);
-    doc.rect(0, 0, 210, 20, 'F');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+    const logoUrl = 'https://numesa.co.za/wp-content/uploads/2023/12/front-page-logo.png';
+
+    // Header
+    doc.setFillColor(76, 175, 80); // Numesa green
+    doc.rect(0, 0, pageWidth, 30, 'F');
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
-    doc.text(`Numesa Task Tracker (${userName})`, 10, 12);
-    
+    doc.setFontSize(18);
+    doc.setFont('Roboto', 'bold');
+    doc.text('Numesa Task Tracker Report', pageWidth / 2, 15, { align: 'center' });
+
+    // Logo (requires conversion to base64 or local image for jsPDF)
+    // For simplicity, we'll assume logo is text-based here; use imgData if you have base64
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Numesa', margin, 25);
+
+    // Metadata
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
+    doc.setFont('Roboto', 'normal');
     const sessionDuration = sessionStartTime ? formatTime(Math.floor((Date.now() - sessionStartTime) / 1000)) : '00:00:00';
-    doc.text(`Generated on: ${getTimestamp()} | Session Duration: ${sessionDuration}`, 10, 25);
+    const exportedTimestamp = getTimestamp();
+    doc.text(`User: ${userName}`, margin, 35);
+    doc.text(`Session Duration: ${sessionDuration}`, margin, 42);
+    doc.text(`Exported Date and Time: ${exportedTimestamp}`, margin, 49);
 
-    let y = 35;
+    // Line separator
+    doc.setDrawColor(76, 175, 80);
+    doc.setLineWidth(0.5);
+    doc.line(margin, 55, pageWidth - margin, 55);
+
+    // Tasks
+    let y = 65;
     const dayTasks = tasks.filter(task => task.date === selectedDate);
     if (selectedDate && dayTasks.length > 0) {
         doc.setFontSize(14);
-        doc.setFillColor(224, 242, 233);
-        doc.rect(10, y - 6, 190, 10, 'F');
-        doc.setTextColor(0, 0, 0);
-        doc.text(selectedDate, 12, y);
+        doc.setTextColor(76, 175, 80);
+        doc.setFont('Roboto', 'bold');
+        doc.text(`Tasks for ${selectedDate}`, margin, y);
         y += 10;
 
         dayTasks.forEach((task, index) => {
+            if (y > pageHeight - 40) {
+                doc.addPage();
+                y = 20;
+            }
+
             doc.setFontSize(12);
-            doc.setFillColor(249, 249, 249);
-            doc.rect(10, y - 5, 190, 10, 'F');
             doc.setTextColor(0, 0, 0);
-            doc.text(`Task ${index + 1}: ${task.name}${task.isDeleted ? ' (Deleted)' : ''}`, 12, y);
-            y += 10;
+            doc.setFont('Roboto', 'bold');
+            doc.text(`${index + 1}. ${task.name}${task.isCompleted ? ' (Completed)' : task.isDeleted ? ' (Deleted)' : ''}`, margin, y);
+            y += 7;
 
             doc.setFontSize(10);
-            doc.text(`Description: ${task.description}`, 12, y);
-            y += 7;
-            doc.text(`Total Duration: ${formatTime(task.totalTime)}`, 12, y);
-            y += 10;
+            doc.setFont('Roboto', 'normal');
+            doc.text(`Description: ${task.description}`, margin + 5, y);
+            y += 6;
+            doc.text(`Total Duration: ${formatTime(task.totalTime)}`, margin + 5, y);
+            y += 8;
 
-            doc.setFontSize(11);
-            doc.text("Audit Trail:", 12, y);
-            y += 7;
             doc.setFontSize(9);
+            doc.setFont('Roboto', 'bold');
+            doc.text('Audit Trail:', margin + 5, y);
+            y += 6;
+
+            doc.setFont('Roboto', 'normal');
             task.auditTrail.forEach(entry => {
-                if (y > 280) {
+                if (y > pageHeight - 40) {
                     doc.addPage();
                     y = 20;
                 }
-                doc.text(`- ${entry}`, 15, y);
-                y += 6;
+                const splitText = doc.splitTextToSize(`- ${entry}`, pageWidth - margin * 2 - 10);
+                splitText.forEach(line => {
+                    doc.text(line, margin + 10, y);
+                    y += 5;
+                });
             });
-            y += 10;
+            y += 5;
+
+            // Section separator
+            doc.setDrawColor(200, 200, 200);
+            doc.setLineWidth(0.2);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 5;
         });
+    } else {
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text('No tasks available for this date.', margin, y);
     }
 
+    // Footer
     doc.setFontSize(8);
     doc.setTextColor(100, 100, 100);
-    doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, 290);
+    doc.setFont('Roboto', 'normal');
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.text(`Page ${i} of ${pageCount}`, pageWidth - margin - 20, pageHeight - margin);
+        doc.text('© 2025 Numesa', margin, pageHeight - margin);
+    }
 
-    doc.save(`numesa_task_report_${new Date().toISOString().split('T')[0]}_${userName}.pdf`);
+    doc.save(`Numesa_Task_Report_${selectedDate.replace(/\//g, '-')}_${userName}_${new Date().toISOString().split('T')[0]}.pdf`);
     clearInterval(sessionTimerInterval);
 }
 
