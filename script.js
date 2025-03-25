@@ -281,7 +281,7 @@ function exportToPDF() {
     doc.rect(0, 0, 210, 20, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
-    doc.text(`Kefir Gut Health Tracker - Numesa (${userName})`, 10, 12);
+    doc.text(`Numesa Task Tracker (${userName})`, 10, 12);
     
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(10);
@@ -332,7 +332,7 @@ function exportToPDF() {
     doc.setTextColor(100, 100, 100);
     doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, 290);
 
-    doc.save(`kefir_task_report_${new Date().toISOString().split('T')[0]}_${userName}.pdf`);
+    doc.save(`numesa_task_report_${new Date().toISOString().split('T')[0]}_${userName}.pdf`);
     clearInterval(sessionTimerInterval);
 }
 
