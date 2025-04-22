@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numesa Task Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>Login – Ouboet Writing App</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <div id="loginSection" class="login-section">
-            <img src="https://numesa.co.za/wp-content/uploads/2023/12/front-page-logo.png" alt="Numesa Logo" class="logo">
-            <h1>Numesa Task Tracker</h1>
-            <form id="loginForm">
-                <input type="text" id="firstName" placeholder="First Name" required>
-                <input type="text" id="surname" placeholder="Surname" required>
-                <button type="submit">Login</button>
-            </form>
-        </div>
-        <div id="calendarSection" class="calendar-section" style="display: none;">
-            <img src="https://numesa.co.za/wp-content/uploads/2023/12/front-page-logo.png" alt="Numesa Logo" class="logo">
-            <h1>Numesa Task Tracker</h1>
-            <div id="calendarContainer" class="calendar-container">
-                <div class="calendar-nav">
-                    <button id="prevMonth"><</button>
-                    <h2 id="currentMonth"></h2>
-                    <button id="nextMonth">></button>
-                </div>
-                <div class="day-names">
-                    <div>Sun</div>
-                    <div>Mon</div>
-                    <div>Tue</div>
-                    <div>Wed</div>
-                    <div>Thu</div>
-                    <div>Fri</div>
-                    <div>Sat</div>
-                </div>
-                <div id="daysContainer" class="days"></div>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
+  <div class="login-logo">
+    <img src="Logo.jpg" alt="Ouboet Logo" />
+  </div>
+
+  <div class="login-container">
+    <h2>Welcome Back</h2>
+    <p>Log in to your account</p>
+    <form onsubmit="login(event)">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter password" required />
+
+      <div class="login-actions">
+        <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
+        <a href="#" onclick="alert('Hint: Both username and password are Ouboet'); return false;">Forgot Password?</a>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    function login(event) {
+      event.preventDefault();
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (user === 'Ouboet' && pass === 'Ouboet') {
+        localStorage.setItem('oubkluis_logged_in', 'true');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('Incorrect username or password.');
+      }
+    }
+  </script>
 </body>
 </html>

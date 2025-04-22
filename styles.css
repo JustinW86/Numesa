@@ -1,308 +1,219 @@
+/* Root Light Mode Variables */
+:root {
+  --bg-color: #fdf6ec;
+  --text-color: #1a1a1a;
+  --card-color: #ffffff;
+  --button-bg: #2f5d34;
+  --button-hover: #3e8045;
+  --danger: #b73737;
+  --border-color: #ddd;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+  --bg-color: #1e1e1e;
+  --text-color: #f0f0f0;
+  --card-color: #2a2a2a;
+  --button-bg: #3a7347;
+  --button-hover: #55a366;
+  --danger: #dd4a4a;
+  --border-color: #444;
+}
+
+/* Global Styling */
 body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 20px;
-    color: #333;
-    background: #f5f5f5;
-    position: relative;
-    overflow-x: hidden;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Gut health and natural background animation */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, #a5d6a7, #81c784, #4caf50, #d7ccc8, #a5d6a7);
-    background-size: 200% 200%;
-    animation: gutFlow 15s ease infinite;
-    z-index: -1;
-    opacity: 0.6;
-}
-
-body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 70%, rgba(129, 199, 132, 0.4), transparent 50%);
-    background-size: 300% 300%;
-    animation: bubbleRise 20s ease infinite;
-    z-index: -1;
-    opacity: 0.5;
-}
-
-@keyframes gutFlow {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
-}
-
-@keyframes bubbleRise {
-    0% { background-position: 0% 100%; transform: translateY(0); }
-    50% { background-position: 50% 50%; transform: translateY(-20px); }
-    100% { background-position: 0% 0%; transform: translateY(0); }
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 1;
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--card-color);
+  border-bottom: 2px solid var(--border-color);
 }
 
 .logo {
-    display: block;
-    margin: 0 auto 20px;
-    max-width: 250px;
-    height: auto;
-    filter: drop-shadow(0 0 5px rgba(76, 175, 80, 0.7));
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
-h1 {
-    text-align: center;
-    color: #4caf50;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
+.logo img {
+  height: 32px;
+  margin-right: 10px;
+  border-radius: 6px;
 }
 
-.login-section {
-    text-align: center;
+/* Buttons */
+button {
+  background-color: var(--button-bg);
+  color: var(--card-color);
+  border: none;
+  padding: 0.6rem 1rem;
+  margin: 5px 4px 10px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.login-section form {
-    display: flex;
+button:hover {
+  background-color: var(--button-hover);
+}
+
+button.danger {
+  background-color: var(--danger);
+}
+
+button.danger:hover {
+  background-color: darkred;
+}
+
+button.toggle-theme {
+  background: transparent;
+  border: 1px solid var(--text-color);
+  color: var(--text-color);
+}
+
+/* Container Layout */
+.container {
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: space-between;
+}
+
+/* Panels */
+.panel {
+  background-color: var(--card-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1 1 45%;
+  min-width: 300px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color);
+}
+
+/* Lists */
+.project-list,
+.page-list {
+  margin-top: 1rem;
+}
+
+.project-entry,
+.page-entry {
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.75rem;
+  background-color: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Inputs */
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--card-color);
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
+}
+
+/* Login Page */
+.login-logo {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.login-logo img {
+  max-width: 150px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  background: var(--card-color);
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.login-container h2 {
+  margin-bottom: 0.2em;
+  color: var(--text-color);
+}
+
+.login-container p {
+  margin-bottom: 1.5em;
+  font-style: italic;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 0.5em 0;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
+
+.login-actions a {
+  text-decoration: none;
+  color: var(--button-bg);
+}
+
+/* Editor Preview / Images */
+.uploaded-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.uploaded-images img {
+  max-width: 150px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
     flex-direction: column;
-    gap: 10px;
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.login-section input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    background: #fff;
-}
-
-.login-section button {
-    padding: 8px;
-    background: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s ease;
-}
-
-.login-section button:hover {
-    background: #2e7d32;
-}
-
-.calendar-container {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.calendar-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.calendar-nav button {
-    background: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.calendar-nav button:hover {
-    background: #2e7d32;
-}
-
-.calendar-nav h2 {
-    color: #333;
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0;
-}
-
-.day-names {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    text-align: center;
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 5px;
-}
-
-.days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-}
-
-.day {
-    text-align: center;
-    padding: 8px;
-    background: #f9f9f9;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.day:hover {
-    background: #e0f2e9;
-}
-
-.day.selected {
-    background: #4caf50;
-    color: white;
-}
-
-.session-timer {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #4caf50;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-.task-section {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    position: relative;
-}
-
-.task-section h2 {
-    color: #4caf50;
-    margin: 0 0 10px;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.task-list {
-    padding: 0;
-}
-
-.task-card {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding: 8px 0;
-}
-
-.task-card.completed {
-    background: #f5f5f5;
-    color: #888;
-}
-
-.task-card.completed input,
-.task-card.completed textarea {
-    background: #f5f5f5;
-    color: #888;
-    border-color: #ccc;
-}
-
-.task-card:last-child {
-    border-bottom: none;
-}
-
-.task-card input, .task-card textarea {
-    flex: 1;
-    padding: 5px;
-    margin-right: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 12px;
-    background: #fff;
-}
-
-.task-card input {
-    height: 25px;
-    max-width: 150px;
-}
-
-.task-card textarea {
-    height: 25px;
-    resize: none;
-    max-width: 200px;
-}
-
-.timer-controls {
-    display: flex;
-    gap: 5px;
-    margin-right: 10px;
-}
-
-.timer-controls button {
-    padding: 4px 8px;
-    background: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 10px;
-    transition: background 0.3s ease;
-}
-
-.timer-controls button:hover:not(:disabled) {
-    background: #2e7d32;
-}
-
-.timer-controls button:disabled {
-    background: #b0bec5;
-    cursor: not-allowed;
-}
-
-.timer {
-    width: 60px;
-    text-align: center;
-    font-size: 12px;
-    color: #333;
-}
-
-#add-task-btn, .export-btn, .back-btn {
-    display: block;
-    margin: 10px auto;
-    padding: 8px 16px;
-    background: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-#add-task-btn:hover, .export-btn:hover, .back-btn:hover {
-    background: #2e7d32;
+  }
 }
