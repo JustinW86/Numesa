@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numesa Task Tracker - Tasks</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Ouboets Writing App - Write</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <img src="https://numesa.co.za/wp-content/uploads/2023/12/front-page-logo.png" alt="Numesa Logo" class="logo">
-        <h1>Numesa Task Tracker</h1>
-        <div id="sessionTimer" class="session-timer">Session Time: 00:00:00</div>
-        <div id="taskSection" class="task-section">
-            <h2 id="selectedDate"></h2>
-            <div id="taskList" class="task-list"></div>
-            <button id="addTaskBtn" class="add-task-btn">Add Task</button>
-            <button id="exportBtn" class="export-btn">Export to PDF</button>
-            <button id="backBtn" class="back-btn">Back to Calendar</button>
+    <div class="editor-container">
+        <h1>Skryf Jou Storie</h1>
+        <textarea id="editor" spellcheck="true" placeholder="Begin writing..."></textarea>
+        <div id="image-upload">
+            <input type="file" id="images" multiple accept="image/*">
+            <label for="images">Drop or select images</label>
         </div>
+        <div id="image-gallery"></div>
+        <button id="export-word">Export to Word</button>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <div id="translate-modal" class="translate-modal" style="display: none;">
+        <h2>Translate Before Export</h2>
+        <select id="language-select">
+            <option value="en">English</option>
+            <option value="af">Afrikaans</option>
+            <option value="es">Spanish</option>
+            <option value="zh">Mandarin</option>
+            <!-- Add more languages as needed -->
+        </select>
+        <button id="confirm-translate">Translate & Export</button>
+    </div>
     <script src="tasks.js"></script>
 </body>
 </html>
