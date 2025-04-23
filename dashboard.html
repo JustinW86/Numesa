@@ -3,39 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ouboet Writing App Dashboard</title>
+  <title>Ouboet Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="Logo.jpg" alt="Ouboet Logo" />
-      Ouboet Writing App Dashboard
+      <img src="boer-image.jpg" alt="Boer Avatar" />
+      Ouboet Dashboard
     </div>
     <div>
-      <button class="toggle-theme" onclick="toggleTheme()">🌙 Toggle Theme</button>
-      <button class="logout" onclick="logout()">Logout</button>
+      <button class="toggle-theme" onclick="toggleTheme()">🌓 Theme</button>
+      <button class="danger" onclick="logout()">🚪 Logout</button>
     </div>
   </header>
 
   <main class="container">
+    <!-- Project Panel -->
     <section class="panel">
-      <h2>Your Projects</h2>
+      <h2>📁 Your Projects</h2>
       <input type="text" id="projectName" placeholder="New Project Name" />
       <div>
-        <button onclick="createProject()">+ Create Project</button>
-        <button onclick="renameProject()">✏️ Rename Project</button>
+        <button onclick="createProject()">➕ Create</button>
+        <button onclick="renameProject()">✏️ Rename</button>
         <button onclick="backupProjects()">💾 Backup</button>
-        <button onclick="importProjects()">📁 Import</button>
+        <button onclick="importProjects()">📂 Import</button>
       </div>
       <div class="project-list" id="projectList"></div>
     </section>
 
+    <!-- Page Panel -->
     <section class="panel">
-      <h2 id="projectHeader">Select a project to manage pages</h2>
+      <h2 id="projectHeader">📄 Select a Project</h2>
       <input type="text" id="pageName" placeholder="New Page Title" />
       <div>
-        <button onclick="createPage()">+ Create Page</button>
+        <button onclick="createPage()">📄 Add Page</button>
         <button onclick="renamePage()">✏️ Rename Page</button>
       </div>
       <div class="page-list" id="pageList"></div>
@@ -43,7 +45,7 @@
   </main>
 
   <footer>
-    &copy; 2025 Ouboet Writing App. Made for writers.
+    &copy; 2025 Ouboet Writing App · 100% Beer & Bullets
   </footer>
 
   <script src="app.js"></script>
