@@ -4,15 +4,18 @@
   <meta charset="UTF-8" />
   <title>Login – Ouboet Writing App</title>
   <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
-  <div class="login-logo">
-    <img src="Logo.jpg" alt="Ouboet Logo" />
-  </div>
-
   <div class="login-container">
-    <h2>Welcome Back</h2>
-    <p>Log in to your account</p>
+    <div class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+      <img src="boer-image.jpg" alt="100% Boer" style="height: 60px; border-radius: 50%; box-shadow: 0 0 10px #00e0ff;" />
+      Ouboet Writer Login
+    </div>
+
+    <h2>Enter the Writing Vault</h2>
+    <p>Use your credentials to begin creating</p>
+
     <form onsubmit="login(event)">
       <label for="username">Username</label>
       <input type="text" id="username" placeholder="Enter username" required />
@@ -20,25 +23,29 @@
       <label for="password">Password</label>
       <input type="password" id="password" placeholder="Enter password" required />
 
-      <div class="login-actions">
+      <div class="login-actions" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
         <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
-        <a href="#" onclick="alert('Hint: Both username and password are Ouboet'); return false;">Forgot Password?</a>
+        <a href="#" onclick="alert('Hint: Username & Password are both Ouboet'); return false;" style="color: var(--accent); text-decoration: none;">Forgot Password?</a>
       </div>
 
-      <button type="submit">Login</button>
+      <button type="submit">🚀 Enter</button>
     </form>
   </div>
+
+  <footer>
+    &copy; 2025 Ouboet Writing App · Built for Brandy Drikers & storytellers.
+  </footer>
 
   <script>
     function login(event) {
       event.preventDefault();
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      if (user === 'Ouboet' && pass === 'Ouboet') {
-        localStorage.setItem('oubkluis_logged_in', 'true');
-        window.location.href = 'dashboard.html';
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      if (user === "Ouboet" && pass === "Ouboet") {
+        localStorage.setItem("oubkluis_logged_in", "true");
+        window.location.href = "dashboard.html";
       } else {
-        alert('Incorrect username or password.');
+        alert("❌ Incorrect login. Try again, Ouboet.");
       }
     }
   </script>

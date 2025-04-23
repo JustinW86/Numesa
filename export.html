@@ -3,29 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <title>Export Project – Ouboet Writing App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <header>
     <div class="logo">
-      <img src="Logo.jpg" alt="Ouboet Logo" />
-      Export Project to PDF
+      <img src="boer-image.jpg" alt="Boer Avatar" />
+      Export Project
     </div>
     <div>
-      <button class="toggle-theme" onclick="toggleTheme()">🌙 Toggle Theme</button>
+      <button class="toggle-theme" onclick="toggleTheme()">🌓 Theme</button>
       <button onclick="window.location.href='dashboard.html'">⬅ Back</button>
     </div>
   </header>
 
   <main class="container">
     <section class="panel" style="flex: 1 1 100%;">
-      <h2>📦 Export Project</h2>
-      <p>Click the button below to export your entire writing project to a single PDF file, including all pages and images.</p>
-      <button onclick="exportProjectToPDF()">📄 Export Full Project</button>
-      <p id="status" style="margin-top: 1em;"></p>
+      <h2>📦 Full Project Export</h2>
+      <p>Generate a futuristic PDF containing all your writing pages and images in one go.</p>
+      <button onclick="exportProjectToPDF()">📄 Export Project</button>
+      <p id="status" style="margin-top: 1rem;"></p>
     </section>
   </main>
+
+  <footer>
+    &copy; 2025 Ouboet Writing App · Export like a legend.
+  </footer>
 
   <script>
     async function exportProjectToPDF() {
@@ -41,7 +46,7 @@
 
       if (!project) return alert("Project not found.");
 
-      status.textContent = "Generating PDF... Please wait.";
+      status.textContent = "⏳ Generating PDF... Please wait.";
 
       doc.setFontSize(18);
       doc.text("📘 Ouboet Writing App – Project Export", 105, y, { align: "center" });
@@ -87,15 +92,15 @@
               doc.addImage(img, "JPEG", margin, y, imgW, imgH);
               y += imgH + 10;
             } catch {
-              doc.text("[⚠️ Could not load image]", margin, y);
+              doc.text("[⚠️ Failed to load image]", margin, y);
               y += 10;
             }
           }
         }
 
-        y += 10;
+        y += 8;
         doc.setFontSize(10);
-        doc.setTextColor(150);
+        doc.setTextColor(160);
         doc.text("--------------------------------------------------", margin, y);
         y += 10;
         doc.setTextColor(0);
